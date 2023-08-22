@@ -2,8 +2,8 @@ import {
   BadGatewayException,
   Injectable,
   InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+  Logger, NotFoundException
+} from "@nestjs/common";
 import { CreateUserInput, UpdateUserInput } from './dto/';
 import { User } from './entities/user.entity';
 import { SignupInput } from '../auth/dto/inputs/signup.input';
@@ -38,6 +38,26 @@ export class UsersService {
 
   findOne(id: string): Promise<User> {
     throw new Error('Method not implemented.');
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOneByOrFail({ email });
+    } catch (error) {
+      throw new NotFoundException(`${email} not found`);
+      /*this.handleDBErrors({
+        code: 'error-001',
+        detail: `${email} not found`,
+      });*/
+    }
+  }
+
+  async findOneById(id: string): Promise<User> {
+    try {
+      return await this.userRepository.findOneByOrFail({ id });
+    } catch (error) {
+      throw new NotFoundException(`${id} not found`);
+    }
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
