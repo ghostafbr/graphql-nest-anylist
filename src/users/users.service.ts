@@ -2,14 +2,16 @@ import {
   BadGatewayException,
   Injectable,
   InternalServerErrorException,
-  Logger, NotFoundException
-} from "@nestjs/common";
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserInput, UpdateUserInput } from './dto/';
 import { User } from './entities/user.entity';
 import { SignupInput } from '../auth/dto/inputs/signup.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ValidRolesEnum } from '../auth/enums/valid-roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -32,12 +34,21 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<User[]> {
-    return [];
-  }
+  async findAll(roles: ValidRolesEnum[]): Promise<User[]> {
+    if (roles.length === 0)
+      return this.userRepository.find(/*{
+      TODO: Not needed because we implemented lazy on lastUpdatedBy property on User entity file
+        relations: {
+          lastUpdatedBy: true,
+        },
+      }*/);
 
-  findOne(id: string): Promise<User> {
-    throw new Error('Method not implemented.');
+    // ??? We have roles [ 'admin', 'superUser' ]
+    return this.userRepository
+      .createQueryBuilder()
+      .andWhere('ARRAY[roles] && ARRAY[:...roles]')
+      .setParameter('roles', roles)
+      .getMany();
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -60,12 +71,28 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    updateBy: User,
+  ): Promise<User> {
+    try {
+      const user = await this.userRepository.preload({
+        ...updateUserInput,
+        id,
+      });
+      user.lastUpdatedBy = updateBy;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
-  async block(id: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async block(id: string, adminUser: User): Promise<User> {
+    const user = await this.findOneById(id);
+    user.isActive = false;
+    user.lastUpdatedBy = adminUser;
+    return await this.userRepository.save(user);
   }
 
   handleDBErrors(error: any): never {

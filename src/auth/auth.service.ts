@@ -46,8 +46,6 @@ export class AuthService {
 
   async validateUser(userId: string): Promise<User> {
     const user = await this.usersService.findOneById(userId);
-
-    console.log('validateUser', user);
     if (!user.isActive)
       throw new UnauthorizedException(
         'User is not active, please contact the administrator',
