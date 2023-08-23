@@ -7,7 +7,7 @@ import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authService: AuthService,
     configService: ConfigService,
@@ -19,7 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    const { id } = payload;
-    return await this.authService.validateUser(id);
+    console.log('payload', payload);
+    const { userId } = payload;
+    return await this.authService.validateUser(userId);
   }
 }
