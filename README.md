@@ -13,4 +13,4 @@
 4. Start the database with `docker-compose up -d`
 5. Run `yarn start:dev` to start the server
 6. Go to `http://localhost:3000/graphql` to see the GraphQL playground
-
+7. Execute the mutation `executeSeed` to seed the database with some data
