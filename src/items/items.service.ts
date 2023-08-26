@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemInput, UpdateItemInput } from './dto/inputs/';
 import { Item } from './entities/item.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { PaginationArgs, SearchArgs } from '../common/dto/args/';
@@ -79,9 +79,7 @@ export class ItemsService {
   async itemCountByUser(user: User): Promise<number> {
     return this.itemsRepository.count({
       where: {
-        user: {
-          id: user.id,
-        },
+        user: { id: user.id },
       },
     });
   }
