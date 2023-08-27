@@ -5,12 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserInput, UpdateUserInput } from './dto/';
+import { UpdateUserInput } from './dto/';
 import { User } from './entities/user.entity';
-import { SignupInput } from '../auth/dto/inputs/signup.input';
+import { SignupInput } from '../auth/dto/inputs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { ValidRolesEnum } from '../auth/enums/valid-roles.enum';
 
 @Injectable()

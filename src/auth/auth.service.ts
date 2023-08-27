@@ -6,7 +6,7 @@ import {
 import { AuthResponse } from './types/auth-response.type';
 import { SigninInput, SignupInput } from './dto/inputs';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 
