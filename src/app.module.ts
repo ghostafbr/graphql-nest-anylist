@@ -25,12 +25,12 @@ import { ListItemModule } from './list-item/list-item.module';
       useFactory: async (jwtService: JwtService) => ({
         playground: false,
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        plugins: [ApolloServerPluginLandingPageLocalDefault],
         context({ req }) {
-          const token = req.headers.authorization?.replace('Bearer ', '');
+          /*const token = req.headers.authorization?.replace('Bearer ', '');
           if (!token) throw new Error('No token provided');
           const payload = jwtService.decode(token);
-          if (!payload) throw new Error('Invalid token');
+          if (!payload) throw new Error('Invalid token');*/
         },
       }),
     }),

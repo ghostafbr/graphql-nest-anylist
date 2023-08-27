@@ -35,9 +35,11 @@ export class SeedService {
     this.isProd = this.configService.get('STATE') === 'prod';
   }
   async executeSeed() {
-    if (this.isProd) {
+    // Se comenta de manera temporal para poder ejecutar el seed en prod
+    // Esto no es recomendable en un ambiente real
+    /*if (this.isProd) {
       throw new UnauthorizedException('We cannot run SEED on Prod');
-    }
+    }*/
 
     // Clean the DB (Delete everything)
     await this.deleteDatabase();
